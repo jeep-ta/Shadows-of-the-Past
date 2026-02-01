@@ -6,18 +6,26 @@ import os
 pygame.init()
 pygame.mixer.init()
 
+# Path Handling
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # Screen Resolution
 screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 fake_screen = pygame.Surface((screen_width, screen_height))
 pygame.display.set_caption("Shadows of the Past")
-icon = pygame.image.load(r"pick-of-destiny.png")
-pygame.display.set_icon(icon)
+try:
+    icon_path = os.path.join(BASE_DIR, "pick-of-destiny.png")
+    icon = pygame.image.load(icon_path)
+    pygame.display.set_icon(icon)
+except FileNotFoundError:
+     print(f"Error loading icon: {icon_path}")
 
 # Load background music
 try:
-    pygame.mixer.music.load(r"Ender Lilies OST - Cliffside Hamlet Extended.mp3")
+    music_path = os.path.join(BASE_DIR, "Ender Lilies OST - Cliffside Hamlet Extended.mp3")
+    pygame.mixer.music.load(music_path)
     pygame.mixer.music.play(-1)  # Loop the music indefinitely
 except pygame.error as e:
     print(f"Error loading music: {e}")
@@ -33,17 +41,17 @@ ending_font = pygame.font.Font(None, 72)
 # Background Images
 bg_images = []
 bg_image_paths = [
-    r"Background\Vague image of a towering creation and a lab.jpg",
-    r"Background\Cryptic Symbol.jpg",
-    r"Background\Triumphant battle from the past.jpg",
-    r"Background\Vision of you creating the creatures.jpg",
-    r"Background\Final Confrontation.jpg",
-    r"Background\Cryptic Symbol.jpg",
-    r"Background\Cryptic Symbol.jpg",
-    r"Background\Cryptic Symbol.jpg",
-    r"Background\Cryptic Symbol.jpg",
-    r"Background\Cryptic Symbol.jpg",
-    r"Background\Cryptic Symbol.jpg",
+    os.path.join(BASE_DIR, "Background", "Vague image of a towering creation and a lab.jpg"),
+    os.path.join(BASE_DIR, "Background", "Cryptic Symbol.jpg"),
+    os.path.join(BASE_DIR, "Background", "Triumphant battle from the past.jpg"),
+    os.path.join(BASE_DIR, "Background", "Vision of you creating the creatures.jpg"),
+    os.path.join(BASE_DIR, "Background", "Final Confrontation.jpg"),
+    os.path.join(BASE_DIR, "Background", "Cryptic Symbol.jpg"),
+    os.path.join(BASE_DIR, "Background", "Cryptic Symbol.jpg"),
+    os.path.join(BASE_DIR, "Background", "Cryptic Symbol.jpg"),
+    os.path.join(BASE_DIR, "Background", "Cryptic Symbol.jpg"),
+    os.path.join(BASE_DIR, "Background", "Cryptic Symbol.jpg"),
+    os.path.join(BASE_DIR, "Background", "Cryptic Symbol.jpg"),
 ]
 
 for path in bg_image_paths:
@@ -419,8 +427,8 @@ def draw_game(scene_index):
         pygame.display.flip()
 # Draw Menu
 def draw_menu():
-    bg = pygame.image.load(os.path.join("Background", "Menuscreen.jpg"))
-    title = pygame.image.load(os.path.join("Background", "title screen.png"))
+    bg = pygame.image.load(os.path.join(BASE_DIR, "Background", "Menuscreen.jpg"))
+    title = pygame.image.load(os.path.join(BASE_DIR, "Background", "title screen.png"))
     fake_screen.blit(bg, (0, 0))
     overlay = pygame.Surface((screen_width, screen_height))
     overlay.fill((0, 0, 0))
@@ -435,11 +443,6 @@ def draw_menu():
     for i, option in enumerate(menu_items):
         # Calculate rect
         text_rect = font.render(option, True, white).get_rect(center=((screen_width // 2)-10 , screen_height // 2 + i * 60))
-        
-        # Highlight if hovered (adjust rect for center alignment)
-        # Note: render_text_with_outline draws at top-left, but we used center for rect calculation logic in original code
-        # Let's keep logic consistent. The original code calculated rect using 'center' but rendered using topleft calc
-        # We need to match the rendering position to be accurate.
         
         render_pos = (screen_width // 2 - 50, screen_height // 2 + i * 60)
         # Let's recalculate rect based on where it is actually drawn
